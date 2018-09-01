@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="" ng-app="ClimateFinder">
+<head>
+    <style type="text/css">
+        table tr td{
+            text-align: center;
+            font-size: 5px;
+        }
+        table tr th{
+            text-align: center;
+
+        }
+    </style>
+    <meta t="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather report for a city</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js" type="application/javascript"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body style = "background-image: url('Oct10,2008-Plumes.jpg');background-attachment: fixed;background-size:cover">
+        <p style="
+                margin-left: 300px;
+                font-size: 40px;
+                font-family:  cursive;">Weather Forecast for next 5 hours
+        </p>
+        <div ng-controller="climateController">
+        <form  style="margin-left: 500px;
+                      margin-top: 43px">
+            State Code: <input type="text" ng-model="scode"><br><br>
+            City Name: <input type="text" ng-model="cname"><br><br>
+            <button ng-click="findWeather()">Get Button</button>
+        </form>
+        <table id="tbldata" style="margin-top: 38px;margin-left: 300px;display: none;" cellpadding="4" cellspacing="3" width="50%">
+            <tr>
+                <th>Temperature</th>
+                <th>Time</th>
+                <th>Forecast</th>
+            </tr>
+            <tr ng-repeat="x in names">
+                <td style="font-size: 20px"> {{ x.feelslike.english}} &#x2109;</td>
+                <td style="font-size: 20px"> {{ x.FCTTIME.pretty}}</td>
+                <td style="font-size: 20px"> <img src="{{ x.icon_url}}"/></td>
+            </tr>
+
+
+        </table>
+    </div>
+</body>
+<script>
+    angular.module('ClimateFinder', []).controller('climateController', function($scope,$http) {
+
+        $scope.findWeather = function() {
+            document.getElementById('tbldata').style.display="block";
+            var  scod = $scope.scode ;
+            console.log(scod);
+            var  cc = $scope.cname;
+            console.log(cc);
+            if(scod==null ||cc==null){
+                alert('please enter valid credentials');
+            }
+            else{
+                var apiQuery='https://api.wunderground.com/api/36b799dc821d5836/hourly/q/'+scod+'/'+cc+'.json';
+                console.log(apiQuery);
+                $http.get(apiQuery).success(function(data) {
+                    console.log(data);
+                    $scope.names = data.hourly_forecast.slice(0,5);
+
+
+                })
+            }
+
+
+
+        }
+    });
+
+</script>
