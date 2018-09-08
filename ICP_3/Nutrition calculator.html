@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="NutriFinder">
+    <head>
+        <meta charset="UTF-8">
+        <title>Nutrition Calculator</title>
+    </head>
+    <meta t="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather report for a city</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js" type="application/javascript"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <body>
+    <h1 class="jumbotron text-center">Nutrition Calculator</h1>
+        <div ng-controller="nutCalculator">
+
+            <div class="container jumbotron text-center">
+                <div class="row">
+                    <div class="col-sm-10 col-xs-2">
+                        <div class="form-group">
+                            <label >Enter Recipe/Food Type:</label>
+                            <input type="text" ng-model="item" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-10">
+                        <button class="btn btn-primary" ng-click="getFoodInfo()"> Get Nutrition Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="container table jumbotron">
+                    <tr>
+                        <th>Serving Weight(grams)</th>
+                        <th>Calories:</th>
+                    </tr>
+                    <tr ng-repeat="x in names">
+                        <td > {{ x.fields.nf_serving_weight_grams}}</td>
+                        <td > {{ x.fields.nf_calories}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>
+<script>
+    var myapp =  angular.module('NutriFinder', []);
+    myapp.controller('nutCalculator', function($scope,$http) {
+        $scope.getFoodInfo = function() {
+            var  food = $scope.item ;
+            console.log(food);
+            if(food == null){
+                alert('please enter a food item');
+            }
+            else{
+                var apiQuery='https://api.nutritionix.com/v1_1/search/'+food+'/?results=0:1&fields=*&appId=a6d3f129&appKey=1f5af4c8bbc683c4f5a1bad06aca394e';
+                console.log(apiQuery);
+                $http.get(apiQuery).success(function(data) {
+                    console.log(data);
+                    $scope.names = data;
+                    console.log($scope.names);
+                })
+            }
+        }
+    });
+</script>

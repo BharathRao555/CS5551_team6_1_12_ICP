@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="PronounceMe">
+<head>
+    <meta charset="UTF-8">
+    <title>Pronounce Any</title>
+</head>
+<meta t="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pronounce any Word</title>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js" type="application/javascript"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<body>
+<h1 class="jumbotron text-center">Pronounce Any Word!!</h1>
+
+
+<div ng-controller="proCalculator">
+    <div class="container jumbotron text-center">
+        <div class="row">
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <label for="usr">Enter Text</label>
+                    <input type="text" ng-model="txt" class="form-control" id="usr">
+                </div>
+                <button class="btn btn-primary" ng-click="pronounceWord()">Pronounce </button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<script>
+    var myapp =  angular.module('PronounceMe', []);
+    myapp.controller('proCalculator', function($scope,$http) {
+        $scope.pronounceWord = function() {
+            var  proTxt = $scope.txt ;
+            var uname='1a83d7d8-89b5-44b8-a9ab-ed06af312009';
+            var pswrd='Nsyv8LNIfiy6';
+            console.log(proTxt);
+            if(proTxt == null){
+                alert('please enter a word');
+            }
+            else {
+                var apiQuery = 'https://stream.watsonplatform.net/text-to-speech/api/v1/synthesize?username='+uname+'&password='+pswrd+'&text=' + proTxt;
+                    var aud = new Audio(apiQuery);
+                    aud.play();
+            }
+        }
+    });
+
+</script>
