@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Login</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <h2></h2>
+  <p>
+      Welcome to my First Ionic Application
+  </p>
+   <p>
+        Created by Bharath Kumar Eilane
+    </p>
+   <ion-list>
+      <ion-item>
+        <ion-label stacked>Username</ion-label>
+        <ion-input type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Password</ion-label>
+        <ion-input type="password"></ion-input>
+      </ion-item>
+           <div padding>
+        <button ion-button color="primary" block>Sign In</button>
+      </div>
+           <ion-item>
+          <ion-label>always remember?</ion-label>
+          <ion-checkbox color="secondary" checked="true"></ion-checkbox>
+        </ion-item>
+           <ion-item>
+             <a href="#" style="color:dodgerblue">forgot password?</a>
+        </ion-item>
+           <div padding>
+        <button ion-button  ion-button (click) = "redirect()" color="danger">New User?</button>
+      </div>  
+    </ion-list>
+</ion-content>
