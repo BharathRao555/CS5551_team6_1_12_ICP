@@ -1,0 +1,151 @@
+<html ng-app="studentMongo" ng-controller="RestController">
+<head >
+    <title>Student Details</title>
+    <link href="css/newStyle.css" rel="stylesheet" />
+    <link href='http://fonts.googleapis.com/css?family=Rokkitt' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script type="text/javascript" src="http://code.angularjs.org/1.1.1/angular.js"></script>
+    <script type="text/javascript" src="http://code.angularjs.org/1.1.1/angular-resource.js"></script>
+    <script type="text/javascript" src="http://code.angularjs.org/1.1.1/angular-sanitize.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script>
+        function meanStack(evt, formDisp) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(formDisp).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+        var myapp = angular.module('studentMongo',[]);
+        myapp.run(function ($http) {
+            // Sends this header with any AJAX request
+            $http.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+            // Send this header only in post requests. Specifies you are sending a JSON object
+            $http.defaults.headers.post['dataType'] = 'json'
+        });
+        myapp.controller('RestController',function($scope,$http){
+            $scope.insertData = function(){
+                console.log($scope.formData.studentId);
+                console.log($scope.formData.studentName);
+                console.log($scope.formData.courseStudy);
+                console.log($scope.formData.major);
+                console.log($scope.formData.minor);
+                var dataParams = {
+                    'studentId' : $scope.studentId,
+                    'studentName' : $scope.studentName,
+                    'courseStudy' : $scope.courseStudy,
+                    'major' : $scope.major,
+                    'minor':$scope.minor
+                };
+                var config = {
+                    headers : {
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                    }
+                }
+                var req = $http.post('http://127.0.0.1:3000/student/create',$scope.formData);
+                req.success(function(data, status, headers, config) {
+                    $scope.message = data;
+                    console.log(data);
+                    alert("Details are saved Successfully saved in MongoDB");
+                });
+                req.error(function(data, status, headers, config) {
+                    alert( "failure message: " + JSON.stringify({data: data}));
+                });
+            };
+            $scope.fetchData = function(){
+                var request=$http.get('http://127.0.0.1:3000/student/search?major='+$scope.major);
+                request.success(function(data, status, headers, config) {
+                    $scope.response = data.data;
+                    console.log(data);
+                });
+                request.error(function(data, status, headers, config) {
+                    alert( "failure message: " + JSON.stringify({data: data}));
+                });
+            }
+        });
+    </script>
+
+</head>
+<body>
+<h1 style="text-align: center; background-color: white"><i class="material-icons" style="font-size:25px; color:black">border_color</i>  Student Application Form</h1>
+
+<div class="row">
+    <div class="col-lg-4" style="background-color:lavender;">
+        <div class="tab" >
+            <button class="tablinks" href="#Create" onclick="meanStack(event,'Create')"><i class="fa fa-fw fa-user"></i>Student Form</button>
+            <button href="#Fetch tablinks" onclick="meanStack(event,'Fetch')"><i class="fa fa-fw fa-search"></i>Student Search</button>
+        </div>
+    </div>
+    <div class="col-lg-6" >
+        <div id="Create" style="width: 100%" align="center" class="tabcontent">
+            <h2>Student Form</h2>
+            <form class="container" style="width: 50%; background-color: #151515"
+                  ng-submit="insertData()" >
+                <label for="studentId" style="color: white"><b>Student Id</b></label>
+                <input type="text" id="studentId" name="studentId"
+                       placeholder="Enter a Student Id" ng-model="formData.studentId" required >
+
+                <label for="studentName" style="color: white"><b>Name</b></label>
+                <input type="text" id="studentName" name="studentName"
+                       placeholder="Enter a Student Name" ng-model="formData.studentName" required >
+
+                <label for="course" style="color: white"><b>Course</b></label>
+                <input type="text" id="course" name="course"
+                       placeholder="Enter a Course" ng-model="formData.courseStudy" required >
+
+                <label for="major" style="color: white"><b>Major</b></label>
+                <input type="text" id="major" name="major"
+                       placeholder="Enter a Major" ng-model="formData.major" required >
+
+                <label for="minor" style="color: white"><b>Minor</b></label>
+                <input type="text" id="minor" name="minor"
+                       placeholder="Enter a Minor" ng-model="formData.minor" required >
+                <input type="submit" style="font-face: 'Comic Sans MS'; font-size: larger; color: black; background-color: blue; border: 3pt ridge lightgrey" value="Submit">
+            </form>
+        </div>
+        <div id="Fetch"  align="center" class="tabcontent">
+            <h2>Search by Major</h2>
+            <form class="container" style="width: 50%; background-color: #151515"
+                  ng-submit="fetchData()" >
+                <input type="text" id="mjor" name="major"
+                       placeholder="Enter a Major to search" ng-model="major" required >
+                <input type="submit"  style="font-face: 'Comic Sans MS'; font-size: larger; color: black; background-color: blue; border: 3pt ridge lightgrey" value="Search">
+            </form>
+            <p>Student Details for Major {{major}} are below:</p>
+            <table border="1" align="center" width="50%" cellpadding="4",cellspacing="3">
+                <tr>
+                    <th>ClassId</th>
+                    <th>Name</th>
+                    <th>Course</th>
+                    <th>Major</th>
+                    <th>Minor</th>
+                </tr>
+                <tr align="center" ng-repeat="data in response">
+                    <td>{{data.class_id}}</td>
+                    <td>{{data.student_name}}</td>
+                    <td>{{data.course_of_study}}</td>
+                    <td>{{data.major}}</td>
+                    <td>{{data.minor}}</td>
+                </tr>
+            </table>
+            </form>
+        </div>
+    </div>
+
+</div>
+</div>
+    </div>
+</div>
+
+
+
+</body>
+</html>
